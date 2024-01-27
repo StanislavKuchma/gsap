@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <title>Document</title>
+    <style>
+        *{
+            box-sizing: border-box;
+            font-family: "Atomic SC", cursive;
+        }
+        body{
+            overflow: hidden;
+        }
+        .selector {
+            width: 10px;
+            height: 10px;
+            display: block;
+            background:rgba(136, 206, 2);
+            opacity: 0.5;
+            margin: 2px;
+            transform: scale(2) translateY(300px);
+
+        }
+
+        .box {
+            position: absolute;
+            width: 850px;
+            height: 300px;
+            margin: auto;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        
+        }
+        .selectors{
+            display: flex;
+            flex-wrap: wrap;
+        }
+        h1,footer{
+            font-size: 5rem;
+            text-align: center;
+        }
+        h1{
+            transform: scale(2) translateX(-1000px);
+        }
+        footer{
+            transform: scale(1.5) translateX(1000px);
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="box">
+        <h1>Hello VVMD Team!</h1>
+   
+        <div class="selectors">
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+            <div class="selector"></div>
+        </div>
+            <footer>Hello, Maksym!</footer>
+
+    </div>
+
+    <script>
+        const tween = gsap.timeline({repeat: 0, repeatDelay: 1});
+
+
+        tween.to("h1",{
+            x: 0,
+            ease: "bounce",
+            duration: 2,
+        })
+        tween.to("footer", {
+                x: 0,
+                ease: "bounce",
+                duration: 2,
+            },"-=1")
+        tween.to(".selector", {
+                y: 0,
+                scale: 1,
+                opacity: 1,
+                ease: "bounce",
+                stagger: 0.05,
+            }, "-=3")
+        tween.to("h1", {
+            fontSize: "5.2rem",
+            color: "rgba(136, 206, 2)",
+            duration: 1,
+        }, "+=1")
+        tween.to("footer", {
+        rotation: -10,
+            }, "-=1")
+
+    </script>
+
+</body>
+
+</html>
