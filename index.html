@@ -25,6 +25,20 @@
             transform: scale(2) translateY(300px);
 
         }
+        .selector1 {
+            width: 100px;
+            height: 100px;
+            scale:1;
+            opacity: 1;
+            background:rgba(136, 206, 2, 0.5);
+            margin: 10px;
+        }
+        .box1{
+            display: flex;
+            flex-wrap: wrap;
+            width: 1600px;
+            margin: auto;
+        }
 
         .box {
             position: absolute;
@@ -56,8 +70,129 @@
 </head>
 
 <body>
+    <div class="box1">
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+                        <div class="selector1"></div>
+    </div>
+
     <div class="box">
         <h1>Hello VVMD Team!</h1>
+
    
         <div class="selectors">
             <div class="selector"></div>
@@ -127,6 +262,23 @@
 
     <script>
         const tween = gsap.timeline({repeat: 0, repeatDelay: 1});
+        tween.to(".selector1", {
+
+                opacity: 1,
+                background: "grey",
+                scale: 0.2,
+                duration: 1,
+                delay: 1,
+                repeat: 0,
+                repeatDelay: 1,
+                stagger: {
+                    each: 0.05,
+                    grid: "auto",
+                    from: "edges",
+                },
+                ease: "bounce.out",
+
+            })
 
 
         tween.to("h1",{
@@ -154,6 +306,7 @@
         tween.to("footer", {
         rotation: -10,
             }, "-=1")
+
 
     </script>
 
