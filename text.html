@@ -1,0 +1,119 @@
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+   
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: monospace;
+
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        .box {
+            position: absolute;
+            width: 750px;
+            height: 300px;
+            margin: auto;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+        }
+
+
+
+        .selector {
+            position: absolute;
+            font-size: 3rem;
+            text-align: center;
+
+
+        }
+        .text{
+            font-weight: bold;
+
+        }
+        .class1{
+            color: rgb(223, 185, 15);
+        }
+        .class2{
+            color: black;
+            background-color: rgb(204, 238, 14);
+        }
+        .class3{
+            color: rgb(136, 206, 2);
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="box">
+        <div class="selector"> Hello
+                <span class="text">world</span>
+        </div>
+    
+    </div>
+
+    <script>
+        gsap.registerPlugin(TextPlugin)
+        // gsap.to(".selector",{
+        //     duration: 2,
+        //     // text: "Hello, world!"
+        //     text:{
+        //         value: "Hello, world!",
+        //         delimiter: " ",
+        //         newClass: "class2",
+        //         type:"diff"
+        //     }
+        // })
+        gsap.to(".text",{
+            duration: 1,
+            delay:1,
+            text:{
+                value: "HTML",
+                newClass: " class1",
+            } 
+        })
+
+                gsap.to(".text", {
+                        duration: 1,
+                        delay:2,
+                        text: {
+                            value: "Java Script",
+                            newClass: " class2",
+                        }
+                    })
+
+
+                            gsap.to(".text", {
+                                    duration: 1,
+                                    delay: 3,
+                                    text: {
+                                        value: "GSAP",
+                                        newClass: " class3",
+                                    }
+                                })
+    </script>
+
+</body>
+
+</html>
