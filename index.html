@@ -5,17 +5,87 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
     <title>Document</title>
     <style>
-        *{
-            box-sizing: border-box;
-            font-family: "Atomic SC", cursive;
-        }
-        body{
-            overflow: hidden;
-        }
+        * {
+
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+    font-family: "Atomic SC", cursive;
+}
+
+body {
+	background-color: black;
+	color: white;
+	font-family: sans-serif;
+	overflow-x: hidden;
+}
+
+.container {
+	max-width: 90%;
+	margin: 0 auto;
+
+}
+
+.header {
+	height: 100px;
+	background-color: #000;
+	font-size: 40px;
+	padding: 30px 0;
+}
+
+.footer {
+	height: 100px;
+	background-color: #000;
+	font-size: 40px;
+	padding: 30px 0;
+}
+
+.main {
+	height: 90vh;
+	width: 400vw;
+	display: flex;
+}
+
+.main section {
+	padding: 100px 0;
+	height: 100%;
+	width: 100vw;
+	background-color: #888;
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+.title {
+	font-size: 100px;
+	color: #000;
+}
+
+.first {
+	background-image: url("https://images.unsplash.com/photo-1565342403917-671ac824577c?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1385&q=80");
+}
+
+.second {
+	background-image: url("https://images.unsplash.com/photo-1547235001-d703406d3f17?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1353&q=80");
+}
+
+.third {
+	background-image: url("https://images.unsplash.com/photo-1589199458829-71ddb2578791?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80");
+}
+
+.fourth {
+	background-image: url("https://images.unsplash.com/photo-1591204541888-a4be13a1707a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
+}
+
+.after-scroll {
+	height: 90vh;
+	background-color: #888;
+}
+
+
+
         .selector {
             width: 10px;
             height: 10px;
@@ -27,8 +97,8 @@
 
         }
         .selector1 {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             scale:1;
             opacity: 1;
             background:rgba(136, 206, 2, 0.5);
@@ -37,7 +107,7 @@
         .box1{
             display: flex;
             flex-wrap: wrap;
-            width: 1600px;
+            /* width: 1600px; */
             margin: auto;
         }
 
@@ -56,18 +126,17 @@
             display: flex;
             flex-wrap: wrap;
         }
-        h1,footer{
-            font-size: 4.8rem;
-            text-align: center;
-        }
         h1{
-
+            font-size: 4rem;
+            text-align: center;
             transform: scale(2) translateX(-1000px);
+            padding-bottom: 20px;
         }
-        footer{
+        .hello-text{
+            font-size: 4.6rem;
+            text-align: center;
             transform: scale(1.5) translateX(1500px);
         }
-
         .text{
             font-weight: bold;
 
@@ -82,245 +151,372 @@
         .class3{
             color: rgb(136, 206, 2);
         }
-    </style>
 
+
+
+
+
+    </style>>
 </head>
 
 <body>
-    <div class="box1">
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-                <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
-        <div class="selector1"></div>
+    <div class="site-container">
+        <header class="header">
+            <div class="container">
+                Шапка
+            </div>
+        </header>
+        <main class="main">
+
+
+        <section class="first">
+            <div class="container">
+                <div class="box1">
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div> 
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                </div>
+        
+                <div class="box">
+                    <h1>Hello VVMD Team!</h1>
+        
+        
+                    <div class="selectors">
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                    </div>
+                    <div class="hello-text">Hello,<span class="text">Maksym</span>!
+        
+                    </div>
+        
+                </div>
+            </div>
+        </section>
+
+            <!-- <section class="first">
+                <div class="container">
+                    <h2 class="title">Заголовок секції</h2>
+                </div>
+            </section> -->
+            <section class="second">
+                <div class="container">
+                    <h2 class="title">Заголовок секції</h2>
+                </div>
+            </section>
+            <section class="third">
+                <div class="container">
+                    <h2 class="title">Заголовок секції</h2>
+                </div>
+            </section>
+            <section class="fourth">
+                <div class="container">
+                    <h2 class="title">Заголовок секції</h2>
+                </div>
+            </section>
+        </main>
+        <!-- <section class="after-scroll">
+            <div class="container">
+                <div class="box1">
+
+
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                    <div class="selector1"></div>
+                </div>
+                
+                <div class="box">
+                    <h1>Hello VVMD Team!</h1>
+                
+                
+                    <div class="selectors">
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                        <div class="selector"></div>
+                    </div>
+                    <div class="hello-text">Hello,<span class="text">Maksym</span>!
+                
+                    </div>
+                
+                </div>
+            </div>
+        </section> -->
+        <!-- <section class="after-scroll">
+            <div class="container">
+                <h2 class="title">Заголовок секции</h2>
+            </div>
+        </section> -->
+        <footer class="footer">
+            <div class="container">
+                Футер
+            </div>
+        </footer>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/ScrollTrigger.min.js"></script>
 
-    <div class="box">
-        <h1>Hello VVMD Team!</h1>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+        
+        <script>
 
-   
-        <div class="selectors">
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-            <div class="selector"></div>
-        </div>
-            <footer>Hello,<span class="text">Maksym</span>!
-   
-            </footer>
-
-    </div>
-
-    <script>
-        const tween = gsap.timeline({repeat: 0, repeatDelay: 1});
-        tween.to(".selector1", {
+            const tween = gsap.timeline({ repeat: 0, repeatDelay: 1 });
+            tween.to(".selector1", {
 
                 opacity: 1,
                 background: "grey",
@@ -337,50 +533,50 @@
                 ease: "bounce.out",
 
             })
-        tween.to("h1",{
-            x: 0,
-            ease: "bounce",
-            duration: 2,
-        })
-        tween.to("footer", {
+            tween.to("h1", {
                 x: 0,
                 ease: "bounce",
                 duration: 2,
-            },"-=1")
-        tween.to(".selector", {
+            })
+            tween.to(".hello-text", {
+                x: 0,
+                ease: "bounce",
+                duration: 2,
+            }, "-=1")
+            tween.to(".selector", {
                 y: 0,
                 scale: 1,
                 opacity: 1,
                 ease: "bounce",
                 stagger: 0.05,
             }, "-=3")
-        tween.to("h1", {
-            fontSize: "5rem",
-            color: "rgba(136, 206, 2)",
-            duration: 1,
-        }, "+=1")
-        tween.to("footer", {
-        rotation: -10,
+            tween.to("h1", {
+                fontSize: "4.2rem",
+                color: "rgba(136, 206, 2)",
+                duration: 1,
+            }, "+=1")
+            tween.to(".hello-text", {
+                rotation: -10,
             }, "-=1")
-        tween.to(".selector1", {
+            tween.to(".selector1", {
 
-            opacity: 0.15,
-            background: "#222",
-            scale: 0.85,
-            duration: 1,
-            delay: 0,
-            repeat: 0,
-            ease: "bounce.out",
-            repeatDelay: 1,
-            stagger: {
-                each: 0.05,
-                grid: "auto",
-                from: "center",
-            }
-        },"-=1")
+                opacity: 0.15,
+                background: "#222",
+                scale: 0.85,
+                duration: 1,
+                delay: 0,
+                repeat: 0,
+                ease: "bounce.out",
+                repeatDelay: 1,
+                stagger: {
+                    each: 0.05,
+                    grid: "auto",
+                    from: "center",
+                }
+            }, "-=1")
 
 
-// Animation text
+            // Animation text
             gsap.registerPlugin(TextPlugin)
             // gsap.to(".selector",{
             //     duration: 2,
@@ -424,8 +620,28 @@
 
 
 
-    </script>
+        </script>
 
+
+
+    <script>
+    const tl = gsap.timeline();
+    //  tl.fromTo('.first', { x: '-100%', y: '-100%' }, { y: 0 })
+        tl.fromTo('.second', { x: '-100%', y: '+100%' }, { y: 0 })
+        tl.fromTo('.third', { x: '-100%' }, { x: '-200%' })
+        tl.fromTo('.fourth', { x: '-400%' }, { x: '-300%' })
+
+        const main = document.querySelector('.main');
+        ScrollTrigger.create({
+            animation: tl,
+            trigger: '.site-container',
+            start: 'top top',
+            end: () => main.offsetWidth / 2,
+            scrub: true,
+            pin: true
+        }); 
+    
+    </script>
 </body>
 
 </html>

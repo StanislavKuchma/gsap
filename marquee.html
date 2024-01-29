@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <title>Document</title>
+    <style>
+.marquee-container {
+  width: 100%;
+  height: 30px;
+  overflow: hidden;
+  line-height: 30px;
+  position:relative;
+}
+
+  .marquee {
+    width: 1000%;
+    overflow: hidden;
+  }
+    span {
+      padding: 0 50px;
+      display: inline-block;
+    }
+  
+
+  b {
+    padding-left: 10px;
+  }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- <div class="container">
+    <div class="block">
+        <span class="marquee-text">Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.Lorem ipsum dolor sit
+            amet.</span>
+    </div>
+</div> -->
+
+<div class="position-relative marquee-container d-none d-sm-block">
+    <div class="marquee">
+        <span>BTC<b>3,588.39</b></span>
+        <span>XRP<b>0.32</b></span>
+        <span>ETH<b>116.36</b></span>
+        <span>EOS<b>2.44</b></span>
+        <span>USDT<b>1.01</b></span>
+        <span>LTC<b>32.61</b></span>
+        <span>XLM<b>0.10</b></span>
+        <span>TRX<b>0.03</b></span>
+        <span>BSV<b>74.29</b></span>
+        <span>ADA<b>0.04</b></span>
+    </div>
+</div>
+
+
+ 
+
+    <script>
+
+
+
+
+
+    // let direction = 1;
+
+    // const duration = 6;
+    // const marquees = document.querySelectorAll(".marquee");
+    // const tl = gsap.timeline({
+    //     repeat: -1,
+    //     yoyo: false,
+    //     onReverseComplete() {
+    //         this.totalTime(this.rawTime() + this.duration() * 10); // otherwise when the playhead gets back to the beginning, it'd stop. So push the playhead forward 10 iterations (it could be any number)
+    //     }
+    // });
+
+    // marquees.forEach(marquee => {
+    //     // This works beacause all the elements inside the marquee wrapper are exactly the same
+    //     tl.to(marquee.querySelectorAll(".marquee_item"), {
+    //         xPercent: marquee.dataset.reversed === "true" ? -100 : 100,
+    //         repeat: 0,
+    //         ease: "linear",
+    //         duration: duration
+    //     }, "<");
+    // });
+
+      //  addEventListener('DOMContentLoaded'),() => {}
+
+    // polyfill
+    window.requestAnimationFrame = (function () {
+        return window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            function (callback) {
+                window.setTimeout(callback, 1000 / 60);
+            };
+    })();
+
+    var speed = 5000;
+    (function currencySlide() {
+        var currencyPairWidth = $('span:first-child').outerWidth();
+        $(".marquee").animate({ marginLeft: -currencyPairWidth }, speed, 'linear', function () {
+            $(this).css({ marginLeft: 0 }).find("span:last").after($(this).find("span:first"));
+        });
+        requestAnimationFrame(currencySlide);
+    })();
+
+    </script>
+
+</body>
+
+</html>
