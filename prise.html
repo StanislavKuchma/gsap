@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>Document</title>
+    <style>
+
+    </style>
+
+</head>
+
+<body>
+<h1>Dynamic Pricing Calculator</h1>
+<input type="range" id="squareFootageInput" placeholder="Enter square footage">
+<div id="pricingContainer">
+    <div class="priceBox" id="weeklyPrice">Weekly Price: $0</div>
+    <div class="priceBox" id="monthlyPrice">Monthly Price: $0</div>
+</div>
+
+    <script>
+        // Function to calculate pricing based on square footage
+        function calculatePricing(squareFootage) {
+            const weeklyPrice = squareFootage * 0.15;
+            const monthlyPrice = weeklyPrice * 4; // Assuming 4 weeks in a month
+
+            return {
+                weekly: weeklyPrice.toFixed(2),
+                monthly: monthlyPrice.toFixed(2)
+            };
+        }
+
+        // Function to update pricing on the website
+        function updatePricingDisplay(squareFootage) {
+            const pricing = calculatePricing(squareFootage);
+            document.getElementById('weeklyPrice').textContent = `Weekly Price: $${pricing.weekly}`;
+            document.getElementById('monthlyPrice').textContent = `Monthly Price: $${pricing.monthly}`;
+        }
+
+        // Event listener for input change
+        document.getElementById('squareFootageInput').addEventListener('input', function (event) {
+            const squareFootage = event.target.value;
+            updatePricingDisplay(squareFootage);
+        });
+
+
+
+
+    </script>
+
+</body>
+
+</html>
+

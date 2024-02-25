@@ -8,107 +8,103 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <title>Document</title>
     <style>
-.marquee-container {
+
+body {
+  min-height: 100vh;
+}
+.body__inner-wrapper {
+  height: 100%;
+  max-width: 104rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6rem;
+  justify-content: center;
+  margin-inline: auto;
+  margin-block-start: 6rem;
+}
+.marquee {
   width: 100%;
-  height: 30px;
+  height: 12rem;
+  pointer-events: none;
+  background: black;
   overflow: hidden;
-  line-height: 30px;
-  position:relative;
+  box-shadow: 0 2rem 2rem 0.4rem rgba(0, 0, 0, 0.2);
+}
+.marquee__inner-wrap {
+  height: 100%;
+  width: 100%;
 }
 
-  .marquee {
-    width: 1000%;
-    overflow: hidden;
+.logo-wrapper{
+  text-align: center;
+  color: lightgray;
+  font-weight: 400;
+  white-space: nowrap;
+  font-size: max(2vw, 2.4rem);
+  line-height: 1.2;
+  font-weight: 700;
+  padding: 1vh 3vw 0;
+  text-transform: uppercase;
+}
+.logo-carusel {
+  height: 100%;
+  width: fit-content;
+  align-items: center;
+  display: flex;
+  position: relative;
+  animation: marquee 10s linear infinite;
+  will-change: transform;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
   }
-    span {
-      padding: 0 50px;
-      display: inline-block;
-    }
-  
+}
+      
 
-  b {
-    padding-left: 10px;
-  }
 
     </style>
 
 </head>
 
 <body>
+    <div class="body__inner-wrapper">
+      <div class="marquee">
+        <div class="marquee__inner-wrap">
+          <div class="logo-carusel">
+            <div class="logo-wrapper">Start</div>
+           <div class="logo-wrapper">Start</div>
+           <div class="logo-wrapper">Start</div>
+           <div class="logo-wrapper">Start</div>
+                      <div class="logo-wrapper">Start</div>
+                      <div class="logo-wrapper">Start</div>
+                      <div class="logo-wrapper">Start</div>
+                      <div class="logo-wrapper">Start</div>
 
-<!-- <div class="container">
-    <div class="block">
-        <span class="marquee-text">Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.Lorem ipsum dolor sit
-            amet.</span>
-    </div>
-</div> -->
-
-<div class="position-relative marquee-container d-none d-sm-block">
-    <div class="marquee">
-        <span>BTC<b>3,588.39</b></span>
-        <span>XRP<b>0.32</b></span>
-        <span>ETH<b>116.36</b></span>
-        <span>EOS<b>2.44</b></span>
-        <span>USDT<b>1.01</b></span>
-        <span>LTC<b>32.61</b></span>
-        <span>XLM<b>0.10</b></span>
-        <span>TRX<b>0.03</b></span>
-        <span>BSV<b>74.29</b></span>
-        <span>ADA<b>0.04</b></span>
-    </div>
-</div>
+            <div class="logo-wrapper">Start</div>
+            <!-- <span>Polar Bear</span>
+            <span>End</span>
+            <span>Start</span>
+            <span>Polar Bear</span>
+            <span>End</span> -->
+                        <!-- <span>Start</span>
+                        <span>Polar Bear</span>
+                        <span>End</span>
+                        <span>Start</span>
+                        <span>Polar Bear</span>
+                        <span>End</span> -->
+    
+          </div>
+        </div>
+      </div>
 
 
- 
 
     <script>
 
 
 
 
-
-    // let direction = 1;
-
-    // const duration = 6;
-    // const marquees = document.querySelectorAll(".marquee");
-    // const tl = gsap.timeline({
-    //     repeat: -1,
-    //     yoyo: false,
-    //     onReverseComplete() {
-    //         this.totalTime(this.rawTime() + this.duration() * 10); // otherwise when the playhead gets back to the beginning, it'd stop. So push the playhead forward 10 iterations (it could be any number)
-    //     }
-    // });
-
-    // marquees.forEach(marquee => {
-    //     // This works beacause all the elements inside the marquee wrapper are exactly the same
-    //     tl.to(marquee.querySelectorAll(".marquee_item"), {
-    //         xPercent: marquee.dataset.reversed === "true" ? -100 : 100,
-    //         repeat: 0,
-    //         ease: "linear",
-    //         duration: duration
-    //     }, "<");
-    // });
-
-      //  addEventListener('DOMContentLoaded'),() => {}
-
-    // polyfill
-    window.requestAnimationFrame = (function () {
-        return window.requestAnimationFrame ||
-            window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame ||
-            function (callback) {
-                window.setTimeout(callback, 1000 / 60);
-            };
-    })();
-
-    var speed = 5000;
-    (function currencySlide() {
-        var currencyPairWidth = $('span:first-child').outerWidth();
-        $(".marquee").animate({ marginLeft: -currencyPairWidth }, speed, 'linear', function () {
-            $(this).css({ marginLeft: 0 }).find("span:last").after($(this).find("span:first"));
-        });
-        requestAnimationFrame(currencySlide);
-    })();
 
     </script>
 

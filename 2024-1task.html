@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Current Year</title>
+  </head>
+
+  <body>
+    <p class="copy">2024</p>
+
+    <script>
+      // Get the current year
+      const currentYear = new Date().getFullYear();
+
+      // Select the year container element and insert the text
+      const yearContainer = document.querySelector(".copy");
+      // yearContainer.textContent = `© ${currentYear} Всі права захищені`;
+
+      yearContainer.innerHTML = `© ${currentYear} Всі права захищені`;
+    </script>
+  </body>
+</html>

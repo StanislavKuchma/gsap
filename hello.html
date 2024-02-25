@@ -6,81 +6,109 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        *{
-            box-sizing: border-box;
-            font-family: "Atomic SC", cursive;
-        }
-        body{
-            overflow: hidden;
-        }
-        .selector {
-            width: 10px;
-            height: 10px;
-            display: block;
-            background:rgba(136, 206, 2);
-            opacity: 0.5;
-            margin: 2px;
-            transform: scale(2) translateY(300px);
 
-        }
-        .selector1 {
-            width: 100px;
-            height: 100px;
-            scale:1;
-            opacity: 1;
-            background:rgba(136, 206, 2, 0.5);
-            margin: 10px;
-        }
-        .box1{
-            display: flex;
-            flex-wrap: wrap;
-            width: 1600px;
-            margin: auto;
-        }
 
-        .box {
-            position: absolute;
-            width: 850px;
-            height: 300px;
-            margin: auto;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
+
+
+        <style>
+
+            * {
+                box-sizing: border-box;
+                font-family: "Atomic SC", cursive;
+            }
         
-        }
-        .selectors{
-            display: flex;
-            flex-wrap: wrap;
-        }
-        h1,footer{
-            font-size: 4.8rem;
-            text-align: center;
-        }
-        h1{
+            body {
+                overflow: hidden;
+            }
+        
+            .selector {
+                width: 0.625rem;
+                height: 0.625rem;
+                display: block;
+                background: rgba(136, 206, 2);
+                opacity: 0.5;
+                margin: 0.125rem;
+                transform: scale(2) translateY(18.75rem);
+        
+            }
+        
+            .selector1 {
+                width: 6.25rem;
+                height: 6.25rem;
+                transform: scale(1);
+                opacity: 1;
+                background: rgba(136, 206, 2, 0.5);
+                margin: 0.625rem;
+            }
+        
+            .box1 {
+                position: absolute;
 
-            transform: scale(2) translateX(-1000px);
-        }
-        footer{
-            transform: scale(1.5) translateX(1500px);
-        }
+                display: flex;
+                flex-wrap: wrap;
+                width: 100rem;
+                height: 80rem;
+                margin: auto;
+                overflow: hidden;
+                                margin: auto;
+                top: 20rem;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            }
+        
+            .box {
+                position: absolute;
+                width: 53.125rem;
+                height: 18.75rem;
+                margin: auto;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+        
+            }
+        
+            .selectors {
+                display: flex;
+                flex-wrap: wrap;
+            }
+        
+            h1,
+            footer {
+                font-size: 4.8rem;
+                text-align: center;
+            }
+        
+            h1 {
+                padding-bottom: 1.25rem;
+                transform: scale(2) translateX(-62.5rem);
+            }
+        
+            footer {
+                padding-top: 2.75rem;
+                transform: scale(1.5) translateX(93.75rem);
+            }
+        
+            .text {
+                font-weight: bold;
+        
+            }
+        
+            .class1 {
+                color: #3e84ef;
+            }
+        
+            .class2 {
+                color: black;
+                background-color: rgb(204, 238, 14);
+            }
+        
+            .class3 {
+                color: rgb(136, 206, 2);
+            }
+        </style>
 
-        .text{
-            font-weight: bold;
-
-        }
-        .class1{
-            color: #3e84ef;
-        }
-        .class2{
-            color: black;
-            background-color: rgb(204, 238, 14);
-        }
-        .class3{
-            color: rgb(136, 206, 2);
-        }
-    </style>
 
 </head>
 
@@ -383,16 +411,7 @@
 
 // Animation text
             gsap.registerPlugin(TextPlugin)
-            // gsap.to(".selector",{
-            //     duration: 2,
-            //     // text: "Hello, world!"
-            //     text:{
-            //         value: "Hello, world!",
-            //         delimiter: " ",
-            //         newClass: "class2",
-            //         type:"diff"
-            //     }
-            // })
+
             gsap.to(".text", {
                 duration: 1,
                 delay: 8,
@@ -422,7 +441,23 @@
             })
 
 
+            tween.to(".selector1", {
 
+                opacity: 1,
+                background: "grey",
+                scaleY: 2,
+                duration: 1,
+                delay: 1,
+                repeat: 0,
+                repeatDelay: 1,
+                stagger: {
+                    each: 0.05,
+                    grid: "auto",
+                    from: "edges",
+                },
+                ease: "bounce.out",
+
+            })
 
 
     </script>
