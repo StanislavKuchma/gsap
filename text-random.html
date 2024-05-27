@@ -21,9 +21,11 @@ body {
 }
 
 .text {
+   
 	max-width: 1000px;
 	font-size: 25px;
 	line-height: 1.5;
+    color: blue;
 }
 
 .text div {
@@ -38,16 +40,16 @@ body {
         <div class="text">Далеко-далеко за словесными горами, в стране гласных и согласных живут рыбные тексты. Что рекламных пор заманивший выйти, ручеек вопроса наш своего рот толку знаках составитель свой меня она дороге продолжил свою рыбными мир
              своих свое по всей одна всемогущая рукопись злых курсивных? Которое агентство бросил, переписывается если даль продолжил свой большого мир своих?
         </div>
-        <script src="gsap.min.js"></script>
-        <script src="script.js"></script>
+        <!-- <script src="gsap.min.js"></script> -->
+        <!-- <script src="script.js"></script> -->
 
 
-    </div>
+    <!-- </div> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
  
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
 
-    <script>
+    <!-- <script>
          gsap.registerPlugin(TextPlugin)
 
         const text = document.querySelector('.text');
@@ -79,15 +81,44 @@ body {
                 })
             });
 
+   </script> -->
 
 
 
+      <!-- // Ділимо на слова а не на букви -->
+   <script>
+    gsap.registerPlugin(TextPlugin);
 
-            
+    const text = document.querySelector('.text');
+
+    const splitText = (el) => {
+        el.innerHTML = el.textContent.replace(/\S+/g, m => {
+            return `<div class="word">${m}</div>`;
+        });
+        return el;
+    };
+
+    const split = splitText(text);
+
+    function random(min, max) {
+        return (Math.random() * (max - min)) + min;
+    }
+
+    Array.from(split.querySelectorAll('.word')).forEach((el, idx) => {
+        tl.from(el, 2.5, {
+            opacity: 0,
+            delay: 6,
+            scale: .1,
+            x: random(-500, 500),
+            y: random(-500, 500),
+            z: random(-500, 500),
+            delay: idx * 0.1, // Збільшуємо затримку для слів
+            repeat: 0,
+        });
+    });
+</script>
 
 
-
-    </script>
 
 </body>
 

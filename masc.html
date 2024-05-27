@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moving Circle</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #e73737; /* Цвет фона для первого дива */
+            z-index: 1; /* Помещаем его ниже других */
+        }
+        #container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2; /* Помещаем его поверх первого дива */
+        }
+        #mask {
+            position: relative;
+            width: 200px; /* Диаметр круга */
+            height: 200px; /* Диаметр круга */
+            background-color: rgba(255, 255, 255, 0); /* Прозрачный фон */
+            border-radius: 50%; /* Делаем круг */
+            margin: auto; /* Центрируем */
+            z-index: 3; /* Помещаем его поверх остальных */
+        }
+        #inner {
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Цвет фона для внутреннего дива */
+            border-radius: 50%; /* Делаем круг */
+            overflow: hidden; /* Скрываем содержимое за пределами круга */
+        }
+    </style>
+</head>
+<body>
+    <div id="background"></div>
+    <div id="container">
+        <div id="mask">
+            <div id="inner"></div>
+        </div>
+    </div>
+<script>
+window.onload = function() {
+    // Получаем ссылку на дивы
+    var container = document.getElementById('container');
+
+    // Функция для обработки движения мыши
+    document.onmousemove = function(e) {
+        // Получаем координаты мыши относительно окна просмотра
+        var x = e.clientX;
+        var y = e.clientY;
+
+        // Устанавливаем положение дива
+        container.style.left = x + 'px';
+        container.style.top = y + 'px';
+    };
+};
+
+    </script>
+</body>
+</html>
+
