@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slider with Details</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .slider {
+            position: relative;
+            display: flex;
+            width: 100%;
+            height: 400px;
+            /* overflow: hidden; */
+            margin-bottom: 20px;
+        }
+        .slider img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+
+        }
+        .details {
+            display: flex;
+            justify-content: left;
+            gap: 20px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .details div {
+            width: 18%;
+            text-align: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            transition: opacity 1s;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .buttons button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .buttons button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="slider">
+            <img id="sliderImage1" src="" alt="Project Image">
+            <img id="sliderImage" src="" alt="Project Image">
+            
+            <img id="sliderImage2" src="" alt="Project Image">
+        </div>
+        <div class="details">
+            <div id="year">Year: </div>
+            <div id="likes">Likes: </div>
+            <div id="projectName">Project Name: </div>
+            <div id="software">Software: </div>
+        </div>
+        <div class="buttons">
+            <button id="backButton">Back</button>
+            <button id="forwardButton">Forward</button>
+        </div>
+    </div>
+
+    <!-- Include GSAP library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
+    <script>
+        const slides = [
+            {
+                image: 'https://via.placeholder.com/800x400?text=Project+1',
+                year: 2021,
+                likes: 150,
+                projectName: 'Project One',
+                software: 'Photoshop'
+            },
+            {
+                image: 'https://via.placeholder.com/800x400?text=Project+2',
+                year: 2020,
+           
+                projectName: 'Project Two'
+                // No software field
+            },
+            {
+                image: 'https://via.placeholder.com/800x400?text=Project+3',
+                year: 2019,
+                likes: 250,
+                projectName: 'Project Three',
+                software: 'Figma'
+            },
+            {
+                image: 'https://via.placeholder.com/800x400?text=Project+4',
+                year: 2018,
+                likes: 300,
+                projectName: 'Project Four',
+                software: 'Sketch'
+            },
+            {
+                image: 'https://via.placeholder.com/800x400?text=Project+5',
+                year: 2022,
+                likes: 350,
+                projectName: 'Project Five',
+                software: 'Adobe XD'
+            }
+        ];
+
+        let currentIndex = 0;
+
+        function updateSlider() {
+            const sliderImage = document.getElementById('sliderImage');
+            const sliderImage1 = document.getElementById('sliderImage1');
+            const sliderImage2 = document.getElementById('sliderImage2');
+            const year = document.getElementById('year');
+            const likes = document.getElementById('likes');
+            const projectName = document.getElementById('projectName');
+            const software = document.getElementById('software');
+
+            const currentSlide = slides[currentIndex];
+            console.log(currentIndex)
+            const currentSlide1 = slides[currentIndex+1];
+            console.log(currentSlide1)
+            const currentSlide2 = slides[currentIndex+2] ;
+
+           
+
+            sliderImage.src = currentSlide.image;
+            sliderImage1.src = currentSlide1.image;
+            sliderImage2.src = currentSlide2.image;
+            year.textContent = `Year: ${currentSlide.year}`;
+            likes.textContent = `Likes: ${currentSlide.likes}`;
+            projectName.textContent = `Project Name: ${currentSlide.projectName}`;
+
+            // Animate project name
+            gsap.fromTo(sliderImage, 
+                        { x: -250, opacity: 0 }, 
+                        { x: 0, opacity: 1, duration: 1.5 });
+
+            // Animate software div
+            if (currentSlide.likes) {
+                console.log(currentSlide.likes)
+                currentSlide.likes != "undefind";
+                gsap.to(likes, { opacity: 1, duration: 1, display: "block"});
+                return
+            } else {
+                gsap.to(likes, { opacity: 0, duration: 1, display: "none"});
+            }
+        }
+
+        document.getElementById('forwardButton').addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % slides.length;
+            updateSlider();
+        });
+
+        document.getElementById('backButton').addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            updateSlider();
+        });
+
+        // Initialize the slider with the first slide
+        updateSlider();
+    </script>
+</body>
+</html>

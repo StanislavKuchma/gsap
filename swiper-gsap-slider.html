@@ -1,0 +1,1288 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scroll-triggered WebGL Image Transition</title>
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 200%;
+      overflow-x: hidden;
+    }
+    #slider {
+      position: fixed;
+      margin-top: 200px;
+      width: 50vw;
+      height: 50vh;
+    }
+    canvas {
+      display: block;
+    }
+    .button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 10px;
+      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+    .button.prev {
+      left: 20px;
+    }
+    .button.next {
+      right: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="slider" data-images='["https://picsum.photos/id/1019/1920/1080", "https://picsum.photos/id/1020/1920/1080", "https://picsum.photos/id/1021/1920/1080", "https://picsum.photos/id/1022/1920/1080", "https://picsum.photos/id/1023/1920/1080", "https://picsum.photos/id/1024/1920/1080"]'>
+  <button id="prev" class="button prev">Prev</button>
+  <button id="next" class="button next">Next</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.1/gsap.min.js"></script>
+<script src="https://unpkg.com/gsap/dist/ScrollTrigger.min.js"></script>
+<script>
+  class Sketch {
+    constructor(opts) {
+      this.scene = new THREE.Scene();
+      this.vertex = `varying vec2 vUv;void main() {vUv = uv;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );}`;
+      this.fragment = opts.fragment;
+      this.uniforms = opts.uniforms;
+      this.renderer = new THREE.WebGLRenderer();
+      this.width = window.innerWidth;
+      this.height = window.innerHeight;
+      this.renderer.setPixelRatio(window.devicePixelRatio);
+      this.renderer.setSize(this.width, this.height);
+      this.renderer.setClearColor(0xeeeeee, 1);
+      this.duration = opts.duration || 1;
+      this.debug = opts.debug || false;
+      this.easing = opts.easing || 'easeInOut';
+      this.container = document.getElementById("slider");
+      this.images = JSON.parse(this.container.getAttribute('data-images'));
+      this.width = this.container.offsetWidth;
+      this.height = this.container.offsetHeight;
+      this.container.appendChild(this.renderer.domElement);
+      this.camera = new THREE.PerspectiveCamera(
+        70,
+        window.innerWidth / window.innerHeight,
+        0.001,
+        1000
+      );
+      this.camera.position.set(0, 0, 2);
+      this.time = 0;
+      this.current = 0;
+      this.textures = [];
+      this.paused = true;
+      this.initiate(() => {
+        console.log(this.textures);
+        this.setupResize();
+        this.settings();
+        this.addObjects();
+        this.resize();
+        this.scrollEvent();
+        this.play();
+      });
+    }
+
+    initiate(cb) {
+      const promises = [];
+      let that = this;
+      this.images.forEach((url, i) => {
+        let promise = new Promise(resolve => {
+          that.textures[i] = new THREE.TextureLoader().load(url, resolve);
+        });
+        promises.push(promise);
+      });
+      Promise.all(promises).then(() => {
+        cb();
+      });
+    }
+
+    scrollEvent() {
+      let scrollPosition = 0;
+      let threshold = 100;
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      ScrollTrigger.create({
+        start: 0,
+        onUpdate: (self) => {
+          let newScrollPosition = self.scroll();
+          if (newScrollPosition - scrollPosition >= threshold) {
+            this.next();
+            scrollPosition = newScrollPosition;
+          } else if (scrollPosition - newScrollPosition >= threshold) {
+            this.prev();
+            scrollPosition = newScrollPosition;
+          }
+        }
+      });
+    }
+
+    settings() {
+      let that = this;
+      if (this.debug) this.gui = new dat.GUI();
+      this.settings = {
+        progress: 0.5
+      };
+      Object.keys(this.uniforms).forEach((item) => {
+        this.settings[item] = this.uniforms[item].value;
+        if (this.debug) this.gui.add(this.settings, item, this.uniforms[item].min, this.uniforms[item].max, 0.01);
+      });
+    }
+
+    setupResize() {
+      window.addEventListener("resize", this.resize.bind(this));
+    }
+
+    resize() {
+      this.width = this.container.offsetWidth;
+      this.height = this.container.offsetHeight;
+      this.renderer.setSize(this.width, this.height);
+      this.camera.aspect = this.width / this.height;
+      this.imageAspect = this.textures[0].image.height / this.textures[0].image.width;
+      let a1;
+      let a2;
+      if (this.height / this.width > this.imageAspect) {
+        a1 = (this.width / this.height) * this.imageAspect;
+        a2 = 1;
+      } else {
+        a1 = 1;
+        a2 = (this.height / this.width) / this.imageAspect;
+      }
+      this.material.uniforms.resolution.value.x = this.width;
+      this.material.uniforms.resolution.value.y = this.height;
+      this.material.uniforms.resolution.value.z = a1;
+      this.material.uniforms.resolution.value.w = a2;
+      const dist = this.camera.position.z;
+      const height = 1;
+      this.camera.fov = 2 * (180 / Math.PI) * Math.atan(height / (2 * dist));
+      this.plane.scale.x = this.camera.aspect;
+      this.plane.scale.y = 1;
+      this.camera.updateProjectionMatrix();
+    }
+
+    addObjects() {
+      let that = this;
+      this.material = new THREE.ShaderMaterial({
+        extensions: {
+          derivatives: "#extension GL_OES_standard_derivatives : enable"
+        },
+        side: THREE.DoubleSide,
+        uniforms: {
+          time: {
+            type: "f",
+            value: 0
+          },
+          progress: {
+            type: "f",
+            value: 0
+          },
+          border: {
+            type: "f",
+            value: 0
+          },
+          intensity: {
+            type: "f",
+            value: 0
+          },
+          scaleX: {
+            type: "f",
+            value: 40
+          },
+          scaleY: {
+            type: "f",
+            value: 40
+          },
+          transition: {
+            type: "f",
+            value: 40
+          },
+          swipe: {
+            type: "f",
+            value: 0
+          },
+          width: {
+            type: "f",
+            value: 0
+          },
+          radius: {
+            type: "f",
+            value: 0
+          },
+          texture1: {
+            type: "f",
+            value: this.textures[0]
+          },
+          texture2: {
+            type: "f",
+            value: this.textures[1]
+          },
+          displacement: {
+            type: "f",
+            value: new THREE.TextureLoader().load('https://uploads-ssl.webflow.com/5dc1ae738cab24fef27d7fd2/5dcae913c897156755170518_disp1.jpg')
+          },
+          resolution: {
+            type: "v4",
+            value: new THREE.Vector4()
+          },
+        },
+        vertexShader: this.vertex,
+        fragmentShader: this.fragment
+      });
+      this.geometry = new THREE.PlaneGeometry(1, 1, 2, 2);
+      this.plane = new THREE.Mesh(this.geometry, this.material);
+      this.scene.add(this.plane);
+    }
+
+    stop() {
+      this.paused = true;
+    }
+
+    play() {
+      this.paused = false;
+      this.render();
+    }
+
+    next() {
+      if (this.isRunning) return;
+      this.isRunning = true;
+      let len = this.textures.length;
+      let nextTexture = this.textures[(this.current + 1) % len];
+      this.material.uniforms.texture2.value = nextTexture;
+      let tl = gsap.timeline();
+      tl.to(this.material.uniforms.progress, this.duration, {
+        value: 1,
+        ease: "power2.inOut",
+        onComplete: () => {
+          console.log('FINISH');
+          this.current = (this.current + 1) % len;
+          this.material.uniforms.texture1.value = nextTexture;
+          this.material.uniforms.progress.value = 0;
+          this.isRunning = false;
+        }
+      });
+    }
+
+    prev() {
+      if (this.isRunning) return;
+      this.isRunning = true;
+      let len = this.textures.length;
+      let prevIndex = this.current - 1 < 0 ? len - 1 : this.current - 1;
+      let prevTexture = this.textures[prevIndex];
+      this.material.uniforms.texture2.value = prevTexture;
+      let tl = gsap.timeline();
+      tl.to(this.material.uniforms.progress, this.duration, {
+        value: 1,
+        ease: "power2.inOut",
+        onComplete: () => {
+          console.log('FINISH');
+          this.current = prevIndex;
+          this.material.uniforms.texture1.value = prevTexture;
+          this.material.uniforms.progress.value = 0;
+          this.isRunning = false;
+        }
+      });
+    }
+
+    render() {
+      if (this.paused) return;
+      this.time += 0.05;
+      this.material.uniforms.time.value = this.time;
+      Object.keys(this.uniforms).forEach((item) => {
+        this.material.uniforms[item].value = this.settings[item];
+      });
+      this.renderer.render(this.scene, this.camera);
+      requestAnimationFrame(this.render.bind(this));
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const sketch = new Sketch({
+      debug: false,
+      uniforms: {
+        intensity: { value: 50., type: 'f', min: 1., max: 100 }
+      },
+      fragment: `
+        uniform float time;
+        uniform float progress;
+        uniform float intensity;
+        uniform float width;
+        uniform float scaleX;
+        uniform float scaleY;
+        uniform float transition;
+        uniform float radius;
+        uniform float swipe;
+        uniform sampler2D texture1;
+        uniform sampler2D texture2;
+        uniform sampler2D displacement;
+        uniform vec4 resolution;
+        varying vec2 vUv;
+        mat2 rotate(float a) {
+          float s = sin(a);
+          float c = cos(a);
+          return mat2(c, -s, s, c);
+        }
+        const float PI = 3.1415;
+        const float angle1 = PI * 0.25;
+        const float angle2 = -PI * 0.75;
+        void main() {
+          vec2 newUV = (vUv - vec2(0.5)) * resolution.zw + vec2(0.5);
+          vec2 uvDivided = fract(newUV * vec2(intensity, 1.));
+          vec2 uvDisplaced1 = newUV + rotate(3.1415926 / 4.) * uvDivided * progress * 0.1;
+          vec2 uvDisplaced2 = newUV + rotate(3.1415926 / 4.) * uvDivided * (1. - progress) * 0.1;
+          vec4 t1 = texture2D(texture1, uvDisplaced1);
+          vec4 t2 = texture2D(texture2, uvDisplaced2);
+          gl_FragColor = mix(t1, t2, progress);
+        }
+      `
+    });
+  });
+</script>
+
+</body>
+</html>
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hover-triggered WebGL Image Transition</title>
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow-x: hidden;
+    }
+    #slider {
+      position: relative;
+      width: 50vw;
+      height: 50vh;
+    }
+    canvas {
+      display: block;
+    }
+    .button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 10px;
+      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+    .button.prev {
+      left: 20px;
+    }
+    .button.next {
+      right: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="slider" data-images='["https://picsum.photos/id/1019/1920/1080", "https://picsum.photos/id/1020/1920/1080", "https://picsum.photos/id/1021/1920/1080", "https://picsum.photos/id/1022/1920/1080", "https://picsum.photos/id/1023/1920/1080", "https://picsum.photos/id/1024/1920/1080"]'>
+  <button id="prev" class="button prev">Prev</button>
+  <button id="next" class="button next">Next</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.1/gsap.min.js"></script>
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+  class Sketch {
+    constructor(opts) {
+      this.scene = new THREE.Scene();
+      this.vertex = `varying vec2 vUv;void main() {vUv = uv;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );}`;
+      this.fragment = opts.fragment;
+      this.uniforms = opts.uniforms;
+      this.renderer = new THREE.WebGLRenderer();
+      this.width = window.innerWidth;
+      this.height = window.innerHeight;
+      this.renderer.setPixelRatio(window.devicePixelRatio);
+      this.renderer.setSize(this.width, this.height);
+      this.renderer.setClearColor(0xeeeeee, 1);
+      this.duration = opts.duration || 1;
+      this.debug = opts.debug || false;
+      this.easing = opts.easing || 'easeInOut';
+      this.container = document.getElementById("slider");
+      this.images = JSON.parse(this.container.getAttribute('data-images'));
+      this.width = this.container.offsetWidth;
+      this.height = this.container.offsetHeight;
+      this.container.appendChild(this.renderer.domElement);
+      this.camera = new THREE.PerspectiveCamera(
+        70,
+        window.innerWidth / window.innerHeight,
+        0.001,
+        1000
+      );
+      this.camera.position.set(0, 0, 2);
+      this.time = 0;
+      this.current = 0;
+      this.textures = [];
+      this.paused = true;
+      this.initiate(() => {
+        console.log(this.textures);
+        this.setupResize();
+        this.settings();
+        this.addObjects();
+        this.resize();
+        this.hoverEvent();
+        this.play();
+      });
+    }
+
+    initiate(cb) {
+      const promises = [];
+      let that = this;
+      this.images.forEach((url, i) => {
+        let promise = new Promise(resolve => {
+          that.textures[i] = new THREE.TextureLoader().load(url, resolve);
+        });
+        promises.push(promise);
+      });
+      Promise.all(promises).then(() => {
+        cb();
+      });
+    }
+
+    hoverEvent() {
+      this.renderer.domElement.addEventListener('mouseenter', () => {
+        console.log('Mouse entered canvas');
+        this.next();
+      });
+    }
+
+    settings() {
+      let that = this;
+      if (this.debug) this.gui = new dat.GUI();
+      this.settings = {
+        progress: 0.5
+      };
+      Object.keys(this.uniforms).forEach((item) => {
+        this.settings[item] = this.uniforms[item].value;
+        if (this.debug) this.gui.add(this.settings, item, this.uniforms[item].min, this.uniforms[item].max, 0.01);
+      });
+    }
+
+    setupResize() {
+      window.addEventListener("resize", this.resize.bind(this));
+    }
+
+    resize() {
+      this.width = this.container.offsetWidth;
+      this.height = this.container.offsetHeight;
+      this.renderer.setSize(this.width, this.height);
+      this.camera.aspect = this.width / this.height;
+      this.imageAspect = this.textures[0].image.height / this.textures[0].image.width;
+      let a1;
+      let a2;
+      if (this.height / this.width > this.imageAspect) {
+        a1 = (this.width / this.height) * this.imageAspect;
+        a2 = 1;
+      } else {
+        a1 = 1;
+        a2 = (this.height / this.width) / this.imageAspect;
+      }
+      this.material.uniforms.resolution.value.x = this.width;
+      this.material.uniforms.resolution.value.y = this.height;
+      this.material.uniforms.resolution.value.z = a1;
+      this.material.uniforms.resolution.value.w = a2;
+      const dist = this.camera.position.z;
+      const height = 1;
+      this.camera.fov = 2 * (180 / Math.PI) * Math.atan(height / (2 * dist));
+      this.plane.scale.x = this.camera.aspect;
+      this.plane.scale.y = 1;
+      this.camera.updateProjectionMatrix();
+    }
+
+    addObjects() {
+      let that = this;
+      this.material = new THREE.ShaderMaterial({
+        extensions: {
+          derivatives: "#extension GL_OES_standard_derivatives : enable"
+        },
+        side: THREE.DoubleSide,
+        uniforms: {
+          time: {
+            type: "f",
+            value: 0
+          },
+          progress: {
+            type: "f",
+            value: 0
+          },
+          border: {
+            type: "f",
+            value: 0
+          },
+          intensity: {
+            type: "f",
+            value: 0
+          },
+          scaleX: {
+            type: "f",
+            value: 40
+          },
+          scaleY: {
+            type: "f",
+            value: 40
+          },
+          transition: {
+            type: "f",
+            value: 40
+          },
+          swipe: {
+            type: "f",
+            value: 0
+          },
+          width: {
+            type: "f",
+            value: 0
+          },
+          radius: {
+            type: "f",
+            value: 0
+          },
+          texture1: {
+            type: "f",
+            value: this.textures[0]
+          },
+          texture2: {
+            type: "f",
+            value: this.textures[1]
+          },
+          displacement: {
+            type: "f",
+            value: new THREE.TextureLoader().load('https://uploads-ssl.webflow.com/5dc1ae738cab24fef27d7fd2/5dcae913c897156755170518_disp1.jpg')
+          },
+          resolution: {
+            type: "v4",
+            value: new THREE.Vector4()
+          },
+        },
+        vertexShader: this.vertex,
+        fragmentShader: this.fragment
+      });
+      this.geometry = new THREE.PlaneGeometry(1, 1, 2, 2);
+      this.plane = new THREE.Mesh(this.geometry, this.material);
+      this.scene.add(this.plane);
+    }
+
+    stop() {
+      this.paused = true;
+    }
+
+    play() {
+      this.paused = false;
+      this.render();
+    }
+
+    next() {
+      if (this.isRunning) return;
+      this.isRunning = true;
+      let len = this.textures.length;
+      let nextTexture = this.textures[(this.current + 1) % len];
+      this.material.uniforms.texture2.value = nextTexture;
+      let tl = new TimelineMax();
+      tl.to(this.material.uniforms.progress, this.duration, {
+        value: 1,
+        ease: Power2[this.easing],
+        onComplete: () => {
+          console.log('FINISH');
+          this.current = (this.current + 1) % len;
+          this.material.uniforms.texture1.value = nextTexture;
+          this.material.uniforms.progress.value = 0;
+          this.isRunning = false;
+        }
+      });
+    }
+
+    prev() {
+      if (this.isRunning) return;
+      this.isRunning = true;
+      let len = this.textures.length;
+      const prevIndex = this.current === 0 ? len - 1 : this.current - 1;
+      let prevTexture = this.textures[prevIndex];
+      this.material.uniforms.texture2.value = prevTexture;
+      let tl = new TimelineMax();
+      tl.to(this.material.uniforms.progress, this.duration, {
+        value: 1,
+        ease: Power2[this.easing],
+        onComplete: () => {
+          console.log('FINISH');
+          this.current = prevIndex;
+          this.material.uniforms.texture1.value = prevTexture;
+          this.material.uniforms.progress.value = 0;
+          this.isRunning = false;
+        }
+      });
+    }
+
+    render() {
+      if (this.paused) return;
+      this.time += 0.05;
+      this.material.uniforms.time.value = this.time;
+      Object.keys(this.uniforms).forEach((item) => {
+        this.material.uniforms[item].value = this.settings[item];
+      });
+      this.renderer.render(this.scene, this.camera);
+      requestAnimationFrame(this.render.bind(this));
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const sketch = new Sketch({
+      debug: false,
+      uniforms: {
+        intensity: { value: 50., type: 'f', min: 1., max: 100 }
+      },
+      fragment: `
+        uniform float time;
+        uniform float progress;
+        uniform float intensity;
+        uniform float width;
+        uniform float scaleX;
+        uniform float scaleY;
+        uniform float transition;
+        uniform float radius;
+        uniform float swipe;
+        uniform sampler2D texture1;
+        uniform sampler2D texture2;
+        uniform sampler2D displacement;
+        uniform vec4 resolution;
+        varying vec2 vUv;
+        mat2 rotate(float a) {
+          float s = sin(a);
+          float c = cos(a);
+          return mat2(c, -s, s, c);
+        }
+        const float PI = 3.1415;
+        const float angle1 = PI * 0.25;
+        const float angle2 = -PI * 0.75;
+        void main() {
+          vec2 newUV = (vUv - vec2(0.5)) * resolution.zw + vec2(0.5);
+          vec2 uvDivided = fract(newUV * vec2(intensity, 1.));
+          vec2 uvDisplaced1 = newUV + rotate(3.1415926 / 4.) * uvDivided * progress * 0.1;
+          vec2 uvDisplaced2 = newUV + rotate(3.1415926 / 4.) * uvDivided * (1. - progress) * 0.1;
+          vec4 t1 = texture2D(texture1, uvDisplaced1);
+          vec4 t2 = texture2D(texture2, uvDisplaced2);
+          gl_FragColor = mix(t1, t2, progress);
+        }
+      `
+    });
+  });
+</script>
+
+</body>
+</html> -->
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiper with WebGL Effect</title>
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow-x: hidden;
+    }
+    #slider {
+      position: relative;
+      width: 50vw;
+      height: 50vh;
+    }
+    canvas {
+      display: block;
+    }
+    .button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 10px;
+      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+    .button.prev {
+      left: 20px;
+    }
+    .button.next {
+      right: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="slider" data-images='["https://picsum.photos/id/1019/1920/1080", "https://picsum.photos/id/1020/1920/1080", "https://picsum.photos/id/1021/1920/1080", "https://picsum.photos/id/1022/1920/1080", "https://picsum.photos/id/1023/1920/1080", "https://picsum.photos/id/1024/1920/1080"]'>
+  <button id="prev" class="button prev">Prev</button>
+  <button id="next" class="button next">Next</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.1/gsap.min.js"></script>
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+  class Sketch {
+    constructor(opts) {
+      this.scene = new THREE.Scene();
+      this.vertex = `varying vec2 vUv;void main() {vUv = uv;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );}`;
+      this.fragment = opts.fragment;
+      this.uniforms = opts.uniforms;
+      this.renderer = new THREE.WebGLRenderer();
+      this.width = window.innerWidth;
+      this.height = window.innerHeight;
+      this.renderer.setPixelRatio(window.devicePixelRatio);
+      this.renderer.setSize(this.width, this.height);
+      this.renderer.setClearColor(0xeeeeee, 1);
+      this.duration = opts.duration || 1;
+      this.debug = opts.debug || false;
+      this.easing = opts.easing || 'easeInOut';
+      this.clicker = document.getElementById("next");
+      this.clicker2 = document.getElementById("prev");
+      this.container = document.getElementById("slider");
+      this.images = JSON.parse(this.container.getAttribute('data-images'));
+      this.width = this.container.offsetWidth;
+      this.height = this.container.offsetHeight;
+      this.container.appendChild(this.renderer.domElement);
+      this.camera = new THREE.PerspectiveCamera(
+        70,
+        window.innerWidth / window.innerHeight,
+        0.001,
+        1000
+      );
+      this.camera.position.set(0, 0, 2);
+      this.time = 0;
+      this.current = 0;
+      this.textures = [];
+      this.paused = true;
+      this.initiate(() => {
+        console.log(this.textures);
+        this.setupResize();
+        this.settings();
+        this.addObjects();
+        this.resize();
+        this.hoverEvent(); // Добавляем обработчик ховера на картинку
+        this.play();
+      })
+    }
+    initiate(cb) {
+      const promises = [];
+      let that = this;
+      this.images.forEach((url, i) => {
+        let promise = new Promise(resolve => {
+          that.textures[i] = new THREE.TextureLoader().load(url, resolve);
+        });
+        promises.push(promise);
+      })
+      Promise.all(promises).then(() => {
+        cb();
+      });
+    }
+    hoverEvent() {
+      this.renderer.domElement.addEventListener('mouseenter', () => {
+        console.log('Mouse entered canvas');
+        this.next();
+      });
+    }
+    clickEvent() {
+      this.clicker.addEventListener('click', () => {
+        this.next();
+      })
+    }
+    clickEvent2() {
+      this.clicker2.addEventListener('click', () => {
+        this.prev();
+      })
+    }
+    settings() {
+      let that = this;
+      if (this.debug) this.gui = new dat.GUI();
+      this.settings = {
+        progress: 0.5
+      };
+      Object.keys(this.uniforms).forEach((item) => {
+        this.settings[item] = this.uniforms[item].value;
+        if (this.debug) this.gui.add(this.settings, item, this.uniforms[item].min, this.uniforms[item].max, 0.01);
+      })
+    }
+    setupResize() {
+      window.addEventListener("resize", this.resize.bind(this));
+    }
+    resize() {
+      this.width = this.container.offsetWidth;
+      this.height = this.container.offsetHeight;
+      this.renderer.setSize(this.width, this.height);
+      this.camera.aspect = this.width / this.height;
+      // image cover
+      this.imageAspect = this.textures[0].image.height / this.textures[0].image.width;
+      let a1;
+      let a2;
+      if (this.height / this.width > this.imageAspect) {
+        a1 = (this.width / this.height) * this.imageAspect;
+        a2 = 1;
+      } else {
+        a1 = 1;
+        a2 = (this.height / this.width) / this.imageAspect;
+      }
+      this.material.uniforms.resolution.value.x = this.width;
+      this.material.uniforms.resolution.value.y = this.height;
+      this.material.uniforms.resolution.value.z = a1;
+      this.material.uniforms.resolution.value.w = a2;
+      const dist = this.camera.position.z;
+      const height = 1;
+      this.camera.fov = 2 * (180 / Math.PI) * Math.atan(height / (2 * dist));
+      this.plane.scale.x = this.camera.aspect;
+      this.plane.scale.y = 1;
+      this.camera.updateProjectionMatrix();
+    }
+    addObjects() {
+      let that = this;
+      this.material = new THREE.ShaderMaterial({
+        extensions: {
+          derivatives: "#extension GL_OES_standard_derivatives : enable"
+        },
+        side: THREE.DoubleSide,
+        uniforms: {
+          time: {
+            type: "f",
+            value: 0
+          },
+          progress: {
+            type: "f",
+            value: 0
+          },
+          border: {
+            type: "f",
+            value: 0
+          },
+          intensity: {
+            type: "f",
+            value: 0
+          },
+          scaleX: {
+            type: "f",
+            value: 40
+          },
+          scaleY: {
+            type: "f",
+            value: 40
+          },
+          transition: {
+            type: "f",
+            value: 40
+          },
+          swipe: {
+            type: "f",
+            value: 0
+          },
+          width: {
+            type: "f",
+            value: 0
+          },
+          radius: {
+            type: "f",
+            value: 0
+          },
+          texture1: {
+            type: "f",
+            value: this.textures[0]
+          },
+          texture2: {
+            type: "f",
+            value: this.textures[1]
+          },
+          displacement: {
+            type: "f",
+            value: new THREE.TextureLoader().load('https://uploads-ssl.webflow.com/5dc1ae738cab24fef27d7fd2/5dcae913c897156755170518_disp1.jpg')
+          },
+          resolution: {
+            type: "v4",
+            value: new THREE.Vector4()
+          },
+        },
+        vertexShader: this.vertex,
+        fragmentShader: this.fragment
+      });
+      this.geometry = new THREE.PlaneGeometry(1, 1, 2, 2);
+      this.plane = new THREE.Mesh(this.geometry, this.material);
+      this.scene.add(this.plane);
+    }
+    stop() {
+      this.paused = true;
+    }
+    play() {
+      this.paused = false;
+      this.render();
+    }
+    next() {
+      if (this.isRunning) return;
+      this.isRunning = true;
+      let len = this.textures.length;
+      let nextTexture = this.textures[(this.current + 1) % len];
+      this.material.uniforms.texture2.value = nextTexture;
+      let tl = new TimelineMax();
+      tl.to(this.material.uniforms.progress, this.duration, {
+        value: 1,
+        ease: Power2[this.easing],
+        onComplete: () => {
+          console.log('FINISH');
+          this.current = (this.current + 1) % len;
+          this.material.uniforms.texture1.value = nextTexture;
+          this.material.uniforms.progress.value = 0;
+          this.isRunning = false;
+        }
+      })
+    }
+    prev() {
+      if (this.isRunning) return;
+      this.isRunning = true;
+      let len = this.textures.length;
+      const prevIndex = this.current === 0 ? len - 1 : this.current - 1;
+      let prevTexture = this.textures[prevIndex];
+      this.material.uniforms.texture2.value = prevTexture;
+      let tl = new TimelineMax();
+      tl.to(this.material.uniforms.progress, this.duration, {
+        value: 1,
+        ease: Power2[this.easing],
+        onComplete: () => {
+          console.log('FINISH');
+          this.current = prevIndex;
+          this.material.uniforms.texture1.value = prevTexture;
+          this.material.uniforms.progress.value = 0;
+          this.isRunning = false;
+        }
+      })
+    }
+    render() {
+      if (this.paused) return;
+      this.time += 0.05;
+      this.material.uniforms.time.value = this.time;
+      Object.keys(this.uniforms).forEach((item) => {
+        this.material.uniforms[item].value = this.settings[item];
+      });
+      this.renderer.render(this.scene, this.camera);
+      requestAnimationFrame(this.render.bind(this));
+    }
+  }
+  
+  document.addEventListener("DOMContentLoaded", function() {
+    const sketch = new Sketch({
+      debug: false,
+      uniforms: {
+        intensity: { value: 50., type: 'f', min: 1., max: 100 }
+      },
+      fragment: `
+        uniform float time;
+        uniform float progress;
+        uniform float intensity;
+        uniform float width;
+        uniform float scaleX;
+        uniform float scaleY;
+        uniform float transition;
+        uniform float radius;
+        uniform float swipe;
+        uniform sampler2D texture1;
+        uniform sampler2D texture2;
+        uniform sampler2D displacement;
+        uniform vec4 resolution;
+        varying vec2 vUv;
+        mat2 rotate(float a) {
+          float s = sin(a);
+          float c = cos(a);
+          return mat2(c, -s, s, c);
+        }
+        const float PI = 3.1415;
+        const float angle1 = PI * 0.25;
+        const float angle2 = -PI * 0.75;
+        void main() {
+          vec2 newUV = (vUv - vec2(0.5)) * resolution.zw + vec2(0.5);
+          vec2 uvDivided = fract(newUV * vec2(intensity, 1.));
+          vec2 uvDisplaced1 = newUV + rotate(3.1415926 / 4.) * uvDivided * progress * 0.1;
+          vec2 uvDisplaced2 = newUV + rotate(3.1415926 / 4.) * uvDivided * (1. - progress) * 0.1;
+          vec4 t1 = texture2D(texture1, uvDisplaced1);
+          vec4 t2 = texture2D(texture2, uvDisplaced2);
+          gl_FragColor = mix(t1, t2, progress);
+        }
+      `
+    });
+
+    window.addEventListener('scroll', function() {
+      const scrollPos = window.scrollY || window.scrollTop || document.getElementsByTagName("html")[0].scrollTop;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollFraction = scrollPos / (documentHeight - windowHeight);
+      sketch.material.uniforms.progress.value = scrollFraction;
+    });
+  });
+</script>
+
+</body>
+</html>    -->
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiper with WebGL Effect</title>
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #333;
+    }
+    #swiper-container {
+      width: 600px;
+      height: 400px;
+    }
+    .swiper-slide {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 600px;
+      height: 400px;
+    }
+    .image-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+
+<div id="swiper-container" class="swiper-container">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide"><div class="image-container" data-image="https://picsum.photos/id/1021/600/400"></div></div>
+    <div class="swiper-slide"><div class="image-container" data-image="https://picsum.photos/id/1022/600/400"></div></div>
+    <div class="swiper-slide"><div class="image-container" data-image="https://picsum.photos/id/1023/600/400"></div></div>
+  </div>
+  <div class="swiper-button-next"></div>
+  <div class="swiper-button-prev"></div>
+</div>
+
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.2.4/pixi.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
+<script>
+  let app, container, filter, swiper;
+
+  function initPixi() {
+    const firstImage = document.querySelector('.swiper-slide-active .image-container').dataset.image;
+
+    app = new PIXI.Application({
+      width: 600,
+      height: 400,
+      transparent: true
+    });
+    document.querySelector('.swiper-slide-active .image-container').appendChild(app.view);
+
+    const texture = PIXI.Texture.from(firstImage);
+    const sprite = new PIXI.Sprite(texture);
+    sprite.width = 600;
+    sprite.height = 400;
+    sprite.anchor.set(0.5);
+    sprite.x = app.screen.width / 2;
+    sprite.y = app.screen.height / 2;
+
+    container = new PIXI.Container();
+    container.addChild(sprite);
+    app.stage.addChild(container);
+
+    const fragmentShader = `
+      precision mediump float;
+      uniform float progress;
+      uniform sampler2D texture1;
+      uniform sampler2D texture2;
+      varying vec2 vTextureCoord;
+      void main() {
+        vec4 t1 = texture2D(texture1, vTextureCoord);
+        vec4 t2 = texture2D(texture2, vTextureCoord);
+        gl_FragColor = mix(t1, t2, progress);
+      }
+    `;
+
+    filter = new PIXI.Filter(null, fragmentShader, {
+      progress: 0,
+      texture1: texture,
+      texture2: texture
+    });
+
+    container.filters = [filter];
+  }
+
+  function applyEffect(previousIndex, activeIndex) {
+    const previousImage = document.querySelector(`.swiper-slide:nth-child(${previousIndex + 1}) .image-container`).dataset.image;
+    const nextImage = document.querySelector(`.swiper-slide:nth-child(${activeIndex + 1}) .image-container`).dataset.image;
+
+    const previousTexture = PIXI.Texture.from(previousImage);
+    const nextTexture = PIXI.Texture.from(nextImage);
+
+    filter.uniforms.texture1 = previousTexture;
+    filter.uniforms.texture2 = nextTexture;
+
+    gsap.fromTo(filter.uniforms, { progress: 0 }, {
+      progress: 1,
+      duration: 1,
+      onComplete: () => {
+        const sprite = new PIXI.Sprite(nextTexture);
+        sprite.width = 600;
+        sprite.height = 400;
+        sprite.anchor.set(0.5);
+        sprite.x = app.screen.width / 2;
+        sprite.y = app.screen.height / 2;
+
+        container.removeChildren();
+        container.addChild(sprite);
+        filter.uniforms.texture1 = nextTexture;
+        filter.uniforms.texture2 = nextTexture;
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    swiper = new Swiper('.swiper-container', {
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      on: {
+        init: () => {
+          initPixi();
+        },
+        slideChangeTransitionStart: () => {
+          applyEffect(swiper.previousIndex, swiper.activeIndex);
+        }
+      }
+    });
+  });
+</script>
+
+</body>
+</html> -->
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image WebGL Effect</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      height: 200vh; /* Сделаем страницу достаточно высокой для скролла */
+    }
+    #imageContainer {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    .image {
+      width: 600px;
+      height: 400px;
+    }
+  </style>
+</head>
+<body>
+  <div id="imageContainer"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.3/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.2.4/pixi.min.js"></script>
+  <script>
+    // GSAP и ScrollTrigger инициализация
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Создание PIXI.js приложения
+    const app = new PIXI.Application({
+      width: 600,
+      height: 400,
+      transparent: true
+    });
+    document.getElementById('imageContainer').appendChild(app.view);
+
+    // Загрузка изображений в PIXI.js
+    const images = [
+      'https://picsum.photos/id/1021/1920/1200',
+      'https://picsum.photos/id/1022/1920/1200',
+      'https://picsum.photos/id/1023/1920/1200'
+    ];
+    const textures = images.map(image => PIXI.Texture.from(image));
+    let currentTextureIndex = 0;
+
+    const sprite = new PIXI.Sprite(textures[currentTextureIndex]);
+    sprite.width = app.screen.width;
+    sprite.height = app.screen.height;
+    app.stage.addChild(sprite);
+
+    // Применение простого WebGL эффекта (размытость при переходе)
+    const blurFilter = new PIXI.filters.BlurFilter();
+    sprite.filters = [blurFilter];
+
+    function nextImage() {
+      currentTextureIndex = (currentTextureIndex + 1) % textures.length;
+      sprite.texture = textures[currentTextureIndex];
+      gsap.fromTo(blurFilter, { blur: 20 }, { blur: 0, duration: 1 });
+    }
+
+    // GSAP ScrollTrigger
+    ScrollTrigger.create({
+      trigger: '#imageContainer',
+      start: 'top top',
+      end: '+=400',
+      onEnter: nextImage,
+      onEnterBack: nextImage,
+      markers: true // Убрать markers после тестирования
+    });
+
+    // Обновление размера сцены при изменении размера окна
+    window.addEventListener('resize', () => {
+      app.renderer.resize(600, 400);
+      sprite.width = app.screen.width;
+      sprite.height = app.screen.height;
+    });
+  </script>
+</body>
+</html> -->
+
+
+

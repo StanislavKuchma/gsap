@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Row Example</title>
+  <style>
+    .slider-container {
+      width: 75%;
+      margin: auto;
+      overflow: hidden; /* Сховуємо надлишковий контент */
+      position: relative;
+    }
+    .slider-wrapper {
+      display: flex;
+      align-self: start;
+
+      transition: transform 1.5s ease; /* Плавний перехід */
+    }
+    .slide {
+      width: 50%; /* Ширина кожного слайду */
+      flex-shrink: 0;
+      margin-right: 30px; /* Простір між слайдами */
+      background-color: #ddd;
+      display: flex;
+      overflow: hidden;
+      justify-content: center;
+      align-items: center;
+      height: 200px; /* Висота слайду */
+      transform: translateX(-50%)
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .button-container button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="slider-container">
+    <div class="slider-wrapper" id="sliderWrapper">
+      <div class="slide"><img src="https://picsum.photos/id/1036/1920/1200" alt="Example Image 5"></div>
+      <div class="slide"><img src="https://picsum.photos/id/1036/1920/1200" alt="Example Image 5"></div>
+      <div class="slide"><img src="https://picsum.photos/id/1036/1920/1200" alt="Example Image 5"></div>
+      <div class="slide"><img src="https://picsum.photos/id/1036/1920/1200" alt="Example Image 5"></div>
+      <div class="slide"><img src="https://picsum.photos/id/1036/1920/1200" alt="Example Image 5"></div>
+    </div>
+  </div>
+  <div class="button-container">
+    <button id="prevButton">Previous</button>
+    <button id="nextButton">Next</button>
+  </div>
+
+  <script>
+    const sliderWrapper = document.getElementById('sliderWrapper');
+    const prevButton = document.getElementById('prevButton');
+    const nextButton = document.getElementById('nextButton');
+
+    let currentSlide = 1;
+
+    function updateSlider() {
+      const slideWidth = sliderWrapper.children[0].offsetWidth + parseInt(getComputedStyle(sliderWrapper.children[0]).marginRight);
+      sliderWrapper.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+    }
+
+    nextButton.addEventListener('click', () => {
+      if (currentSlide < sliderWrapper.children.length - 1) {
+        currentSlide++;
+        updateSlider();
+      }
+    });
+
+    prevButton.addEventListener('click', () => {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlider();
+      }
+    });
+
+    window.addEventListener('resize', updateSlider);
+  </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+/* Desktop */
+@media screen and (min-width: 768px) {
+.sessions_slide:hover {
+    flex-basis: calc( var(--sessions--width) / 2 );
+    transition: all 0.3s ease;
+}
+
+.sessions_slide[data-active]:hover {
+    flex-basis: var(--sessions--width);
+    flex-grow: 0; 
+}
+
+/* thin first and last slides */
+.sessions_slide:nth-child(3),
+.sessions_slide:nth-child(10) {
+  flex: 0 0 10px;
+}
+
+/* front slide staged outside of list view that will animate in on nextSlide() */
+.sessions_slide:nth-child(2) {
+  flex: 0 0 5px;
+  transform: translateX(-50px);
+}
+
+/* end slide staged outside of list view that will animate in on prevSlide()*/
+.sessions_slide:nth-child(11) {
+	flex: 0 0 5px;
+  transform: translateX(50px);
+}
+
+/* invisible first slide and all slides at end */
+.sessions_slide:nth-child( 1 ),
+.sessions_slide:nth-child( n + 12 ) {
+  flex: 0 0 0px;
+  margin: 0;
+  opacity: 0 !important;
+}
+
+/* reduce opacity of images inside slides 1-4 and 10+ */
+.sessions_slide:not(:nth-child( n + 5 )) img,
+.sessions_slide:nth-child( n + 9 ) img {
+  opacity: 0.8;
+}
+
+/*
+.sessions_slide:not(:nth-child( n + 4 )) *,
+.sessions_slide:nth-child( n + 10 ) * {
+  opacity: 0 !important;
+}
+*/
+
+}
+
+
+
+
+
+/* Mobile */
+
+    
+    .sessions_slide {
+        flex-basis: 10%;
+        margin: 0 5px;
+    }
+    
+    .sessions_slide[data-active] {
+        flex-basis: 45%;
+        flex-grow: 0;
+    }
+
+    .sessions_slide:nth-child(3),
+    .sessions_slide:nth-child(7) {
+        flex: 0 0 10px;
+    }
+
+    .sessions_slide:nth-child(2),
+    .sessions_slide:nth-child(8) {
+        flex: 0 0 5px;
+        transform: translateX(-50px);
+    }
+
+    .sessions_slide:nth-child(8) {
+        transform: translateX(50px);
+    }
+
+    .sessions_slide:nth-child( 1 ),
+    .sessions_slide:nth-child( n + 9 ) {
+        flex: 0 0 0px;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none;
+        opacity: 0!important;
+    }
+
+    .sessions_slide:not(:nth-child( n + 5 )) img,
+    .sessions_slide:nth-child( n + 7 ) img {
+        opacity: 0.8;
+    }
+
+/*
+    .sessions_slide:not(:nth-child( n + 4 )) *,
+    .sessions_slide:nth-child( n + 7 ) * {
+        opacity: 0!important;
+    }  
+    */
